@@ -195,4 +195,4 @@ def download(url, dest_dir, filename=None, timeout=60, verbose=False):
 # Example usage:
 if __name__ == "__main__":
     url = "https://example.com/file.zip"
-    download(url
+    download(url)
