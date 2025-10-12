@@ -1,7 +1,7 @@
 name: Check Terminal Size
 
 on:
-  puh:
+  push:
 
 jobs:
   check-size:
