@@ -1,4 +1,4 @@
-name: Check Terminal Size
+name: Test File
 
 on:
   push:
@@ -11,7 +11,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Run terminal size check
+      - name: Run <file_name> check
         run: |
-          echo "Running terminal size check..."
-          python3 terminal_size.py
+          echo "Running <file_name>..."
+          python3 
