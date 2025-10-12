@@ -11,7 +11,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Run <file_name> check
+      - name: Run download check
         run: |
-          echo "Running <file_name>..."
-          python3 
+          echo "Running test download..."
+          python3 download.py
