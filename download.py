@@ -59,7 +59,7 @@ class Logger:
 
     def _output_line(self, line):
         if not sys.stdout.isatty():
-            sys.stdout.write(f'\r{line}')
+            print(f'\r{line}')
             sys.stdout.flush()
         else:
             self._overwrite_line(line)
@@ -72,12 +72,12 @@ class Logger:
 
     # -------- Progress bar method --------
     def progress(self, iterable, description="Downloading", total=None, bar_length=30, unit="b", completion_message="✅ Download complete!"):
-        if os.environ.get("CI") == "true":
+        """if os.environ.get("CI") == "true":
             print(f"{description}...")
             for item in iterable:
                 yield item
             print(f"\n{completion_message}")
-            return
+            return"""
 
         if total is None:
             try:
