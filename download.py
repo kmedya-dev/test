@@ -48,20 +48,21 @@ class Logger:
             self.log_debug(f"least_count: Visible line length: {visible_line_length}, Terminal width: {terminal_width}, Calculated lines: {calculated_lines}")
             return calculated_lines
         return 1
-  
-    def _overwrite_line(self, line, final=False):
-        """Overwrites the previous line(s) in the terminal with the given line."""
-        if sys.stdout.isatty():
-            escape_code = f"\x1b[{self._last_line_count}F\r\x1b[K"
-            sys.stdout.write(escape_code)
-            print(line)
-            sys.stdout.flush()
-            self._last_line_count = self.least_count(line)
-        else:
-            if final:
-                print(line + "\n")
-                sys.stdout.flush()
 
+    def _overwrite_line(self, line):
+        """Overwrites the previous line(s) in the terminal with the given line."""
+        escape_code = f"\x1b[{self._last_line_count}F\r\x1b[K"
+        sys.stdout.write(escape_code)
+        print(line)
+        sys.stdout.flush()
+        self._last_line_count = self.least_count(line)
+
+    def _output_line(self, line):
+        if not sys.stdout.isatty():
+            print(line)
+        else:
+            self._overwrite_line(line)
+ 
     def format_time(self, seconds):
         seconds = int(seconds)
         h, rem = divmod(seconds, 3600)
@@ -142,7 +143,7 @@ class Logger:
                 f"{eta_str}"
             )
 
-            self._overwrite_line(line)
+            self._output_line(line)
 
         # completion message
         if completion_message:
