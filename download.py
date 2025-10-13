@@ -11,8 +11,6 @@ if sys.platform == 'win32':
 else:
     init(autoreset=True, strip=False, convert=False)
 
-logger = Logger()
-
 class Logger:
     def __init__(self):
         pass
@@ -121,6 +119,8 @@ class Logger:
         # completion message
         if completion_message:
             print(f"\n{completion_message}")
+
+logger = Logger()
 
 
 def download(url, dest_dir, filename=None, timeout=60, verbose=False):
