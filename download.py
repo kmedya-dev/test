@@ -57,12 +57,12 @@ class Logger:
         sys.stdout.flush()
         self._last_line_count = self.least_count(line)
 
-    def _output_line(self, line):
+    """def _output_line(self, line):
         if not sys.stdout.isatty():
             print(f'\r{line}')
             sys.stdout.flush()
         else:
-            self._overwrite_line(line)
+            self._overwrite_line(line)"""
  
     def format_time(self, seconds):
         seconds = int(seconds)
@@ -151,7 +151,7 @@ class Logger:
                 f"{eta_str}"
             )
 
-            self._output_line(line)
+            self._overwrite_line(line)
 
         # completion message
         if completion_message:
