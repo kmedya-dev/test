@@ -18,7 +18,7 @@ class Logger:
     def least_count(self, line):
         """Calculates the number of lines a string will occupy in the terminal."""
         terminal_width = shutil.get_terminal_size().columns
-        print(f"[DEBUG] least_count: terminal_width={terminal_width}, len(line)={len(line)}")
+        print(f"[DEBUG] least_count={least_count}, terminal_width={terminal_width}, len(line)={len(line)}")
         if terminal_width > 0:
             return (len(line) + terminal_width - 1) // terminal_width
         return 1
