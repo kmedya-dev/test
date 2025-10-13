@@ -59,7 +59,8 @@ class Logger:
 
     def _output_line(self, line):
         if not sys.stdout.isatty():
-            print(line)
+            sys.stdout.write(f'\r{line}')
+            sys.stdout.flush()
         else:
             self._overwrite_line(line)
  
