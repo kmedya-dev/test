@@ -58,10 +58,8 @@ class Logger:
             sys.stdout.flush()
             self._last_line_count = self.least_count(line)
         else:
-            sys.stdout.write(line + "\n")
-            sys.stdout.flush()
-            self._last_line_count = self.least_count(line)
-      
+            print(line)
+
     def format_time(self, seconds):
         seconds = int(seconds)
         h, rem = divmod(seconds, 3600)

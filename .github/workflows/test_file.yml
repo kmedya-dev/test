@@ -17,6 +17,7 @@ jobs:
           python3 check_ANSI-escape.py
           python3 download.py
           python3 check_TTY.py
+
       - name: Display download log
         run: |
           LOG_FILE=$(ls -t ~/.logs/download-*.log | head -n 1)
