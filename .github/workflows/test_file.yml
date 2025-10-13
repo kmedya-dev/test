@@ -15,7 +15,8 @@ jobs:
         run: |
           echo "Running test download..."
           python3 download.py
-
+          
+  _disabled_steps: |
       - name: Display download log
         run: |
           LOG_FILE=$(ls -t ~/.logs/download-*.log | head -n 1)
