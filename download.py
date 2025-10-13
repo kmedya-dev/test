@@ -72,6 +72,13 @@ class Logger:
 
     # -------- Progress bar method --------
     def progress(self, iterable, description="Downloading", total=None, bar_length=30, unit="b", completion_message="✅ Download complete!"):
+        if os.environ.get("CI") == "true":
+            print(f"{description}...")
+            for item in iterable:
+                yield item
+            print(f"\n{completion_message}")
+            return
+
         if total is None:
             try:
                 total = len(iterable)
