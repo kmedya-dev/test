@@ -51,13 +51,16 @@ class Logger:
   
     def _overwrite_line(self, line):
         """Overwrites the previous line(s) in the terminal with the given line."""
-        """if self._last_line_count > 0:"""
-        escape_code = f"\x1b[{self._last_line_count}F\r\x1b[K"
-        sys.stdout.write(escape_code)
-        
-        print(line)
-        sys.stdout.flush()
-        self._last_line_count = self.least_count(line)
+        if sys.stdout.isatty():
+            escape_code = f"\x1b[{self._last_line_count}F\r\x1b[K"
+            sys.stdout.write(escape_code)
+            sys.stdout.write(line)
+            sys.stdout.flush()
+            self._last_line_count = self.least_count(line)
+        else:
+            sys.stdout.write(line + "\n")
+            sys.stdout.flush()
+            self._last_line_count = self.least_count(line)
       
     def format_time(self, seconds):
         seconds = int(seconds)
