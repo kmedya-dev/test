@@ -4,6 +4,7 @@ import shutil
 import time
 import requests
 import logging
+import re
 from colorama import Fore, Style, init
 
 # Initialize Colorama
@@ -31,18 +32,23 @@ class Logger:
     def log_debug(self, message):
         if self.debug:
             self.logger.debug(message)
+
+    def _strip_ansi(self, text):
+        ansi_escape = re.compile(r'\x1b\[[0-?]*[ -/]*[@-~]')
+        return ansi_escape.sub('', text)
   
     def least_count(self, line):
         """Calculates the number of lines a string will occupy in the terminal."""
         terminal_width = shutil.get_terminal_size().columns
+        visible_line_length = len(self._strip_ansi(line))
         if terminal_width > 0:
-            return (len(line) + terminal_width - 1) // terminal_width
+            return (visible_line_length + terminal_width - 1) // terminal_width
         return 1
   
     def _overwrite_line(self, line):
         """Overwrites the previous line(s) in the terminal with the given line."""
         terminal_width = shutil.get_terminal_size().columns
-        self.log_debug(f"_overwrite_line: Terminal width: {terminal_width}, Line length: {len(line)}")
+        self.log_debug(f"_overwrite_line: Terminal width: {terminal_width}, Line length: {len(self._strip_ansi(line))}")
         if terminal_width < len(line):
             escape_code = f"\x1b[{self.least_count(line)}F\r\x1b[J"
             self.log_debug(f"_overwrite_line: Using multi-line overwrite escape code: {repr(escape_code)}")
