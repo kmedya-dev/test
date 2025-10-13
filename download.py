@@ -45,12 +45,12 @@ class Logger:
         self.log_debug(f"_overwrite_line: Terminal width: {terminal_width}, Line length: {len(line)}")
         if terminal_width < len(line):
             escape_code = f"\x1b[{self.least_count(line)}F\r\x1b[J"
-            self.log_debug(f"_overwrite_line: Using multi-line overwrite escape code: {escape_code}")
+            self.log_debug(f"_overwrite_line: Using multi-line overwrite escape code: {repr(escape_code)}")
             sys.stdout.write(escape_code)
             print(line)
         else:
             escape_code = "\x1b[F\r\x1b[J"
-            self.log_debug(f"_overwrite_line: Using single-line overwrite escape code: {escape_code}")
+            self.log_debug(f"_overwrite_line: Using single-line overwrite escape code: {repr(escape_code)}")
             sys.stdout.write(escape_code)
             print(line)
         sys.stdout.flush()
