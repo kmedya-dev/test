@@ -18,7 +18,6 @@ class Logger:
     def least_count(self, line):
         """Calculates the number of lines a string will occupy in the terminal."""
         terminal_width = shutil.get_terminal_size().columns
-        print(f"[DEBUG] least_count={least_count}, terminal_width={terminal_width}, len(line)={len(line)}")
         if terminal_width > 0:
             return (len(line) + terminal_width - 1) // terminal_width
         return 1
@@ -26,15 +25,12 @@ class Logger:
     def _overwrite_line(self, line):
         """Overwrites the previous line(s) in the terminal with the given line."""
         terminal_width = shutil.get_terminal_size().columns
-        print(f"[DEBUG] _overwrite_line: terminal_width={terminal_width}, len(line)={len(line)}")
         if terminal_width < len(line):
             escape_code = f"\x1b[{self.least_count(line)}F\r\x1b[J"
-            print(f"[DEBUG] _overwrite_line: multi-line escape_code='{escape_code.encode('unicode_escape').decode()}'")
             sys.stdout.write(escape_code)
             print(line)
         else:
             escape_code = "\x1b[F\r\x1b[J"
-            print(f"[DEBUG] _overwrite_line: single-line escape_code='{escape_code.encode('unicode_escape').decode()}'")
             sys.stdout.write(escape_code)
             print(line)
         sys.stdout.flush()
@@ -175,6 +171,7 @@ def download(url, dest_dir, filename=None, timeout=60, verbose=False):
 
 # Example usage:
 
+# Trigger a new GitHub workflow run
 if __name__ == "__main__":
 
     url = "https://github.com/libffi/libffi/releases/download/v3.5.2/libffi-3.5.2.tar.gz"
