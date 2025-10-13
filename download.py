@@ -18,6 +18,7 @@ class Logger:
     def least_count(self, line):
         """Calculates the number of lines a string will occupy in the terminal."""
         terminal_width = shutil.get_terminal_size().columns
+        print(f"[DEBUG] least_count: terminal_width={terminal_width}, len(line)={len(line)}")
         if terminal_width > 0:
             return (len(line) + terminal_width - 1) // terminal_width
         return 1
@@ -25,13 +26,16 @@ class Logger:
     def _overwrite_line(self, line):
         """Overwrites the previous line(s) in the terminal with the given line."""
         terminal_width = shutil.get_terminal_size().columns
+        print(f"[DEBUG] _overwrite_line: terminal_width={terminal_width}, len(line)={len(line)}")
         if terminal_width < len(line):
-            # for small display (multi-line)
-            sys.stdout.write(f"\x1b[{self.least_count(line)}F\r\x1b[J")
+            escape_code = f"\x1b[{self.least_count(line)}F\r\x1b[J"
+            print(f"[DEBUG] _overwrite_line: multi-line escape_code='{escape_code.encode('unicode_escape').decode()}'")
+            sys.stdout.write(escape_code)
             print(line)
         else:
-            # for large display (single-line)
-            sys.stdout.write("\x1b[F\r\x1b[J")
+            escape_code = "\x1b[F\r\x1b[J"
+            print(f"[DEBUG] _overwrite_line: single-line escape_code='{escape_code.encode('unicode_escape').decode()}'")
+            sys.stdout.write(escape_code)
             print(line)
         sys.stdout.flush()
       
