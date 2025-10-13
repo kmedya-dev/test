@@ -53,8 +53,7 @@ class Logger:
         """Overwrites the previous line(s) in the terminal with the given line."""
         escape_code = f"\x1b[{self._last_line_count}F\r\x1b[K"
         sys.stdout.write(escape_code)
-        print(line)
-        sys.stdout.flush()
+        print(line, flush=True)
         self._last_line_count = self.least_count(line)
 
     """def _output_line(self, line):
