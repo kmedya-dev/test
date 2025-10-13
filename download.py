@@ -49,12 +49,12 @@ class Logger:
             return calculated_lines
         return 1
   
-    def _overwrite_line(self, line, final=False):
+    def _overwrite_line(self, line, final=True):
         """Overwrites the previous line(s) in the terminal with the given line."""
         if sys.stdout.isatty():
             escape_code = f"\x1b[{self._last_line_count}F\r\x1b[K"
             sys.stdout.write(escape_code)
-            sys.stdout.write(line)
+            print(line)
             sys.stdout.flush()
             self._last_line_count = self.least_count(line)
         else:
