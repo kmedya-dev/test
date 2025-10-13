@@ -173,7 +173,7 @@ def download(url, dest_dir, filename=None, timeout=60, verbose=False):
 
 if __name__ == "__main__":
 
-    url = "https://example.com/file.zip"
+    url = "https://github.com/libffi/libffi/releases/download/v3.5.2/libffi-3.5.2.tar.gz"
 
     dest_dir = os.path.join(os.path.expanduser("~"), "Downloads")
 
