@@ -15,3 +15,13 @@ jobs:
         run: |
           echo "Running test download..."
           python3 download.py
+
+      - name: Display download log
+        run: |
+          LOG_FILE=$(ls -t ~/.logs/download-*.log | head -n 1)
+          if [ -f "$LOG_FILE" ]; then
+            echo "--- Content of $LOG_FILE ---"
+            cat "$LOG_FILE"
+          else
+            echo "No download log file found."
+          fi

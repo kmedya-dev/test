@@ -3,6 +3,7 @@ import os
 import shutil
 import time
 import requests
+import logging
 from colorama import Fore, Style, init
 
 # Initialize Colorama
@@ -11,9 +12,25 @@ if sys.platform == 'win32':
 else:
     init(autoreset=True, strip=False, convert=False)
 
+LOG_DIR = os.path.join(os.path.expanduser("~"), ".logs")
 class Logger:
     def __init__(self):
-        pass
+        self.debug = True
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.DEBUG)
+
+        if self.debug:
+            os.makedirs(LOG_DIR, exist_ok=True)
+            file_handler = logging.FileHandler(os.path.join(LOG_DIR, f"download-{time.strftime('%Y%m%d-%H%M%S')}.log"))
+            file_handler.setLevel(logging.DEBUG)
+            formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+            file_handler.setFormatter(formatter)
+            self.logger.addHandler(file_handler)
+            self.logger.debug("Logger initialized and debug mode is ON.")
+
+    def log_debug(self, message):
+        if self.debug:
+            self.logger.debug(message)
   
     def least_count(self, line):
         """Calculates the number of lines a string will occupy in the terminal."""
@@ -25,12 +42,15 @@ class Logger:
     def _overwrite_line(self, line):
         """Overwrites the previous line(s) in the terminal with the given line."""
         terminal_width = shutil.get_terminal_size().columns
+        self.log_debug(f"_overwrite_line: Terminal width: {terminal_width}, Line length: {len(line)}")
         if terminal_width < len(line):
             escape_code = f"\x1b[{self.least_count(line)}F\r\x1b[J"
+            self.log_debug(f"_overwrite_line: Using multi-line overwrite escape code: {escape_code}")
             sys.stdout.write(escape_code)
             print(line)
         else:
             escape_code = "\x1b[F\r\x1b[J"
+            self.log_debug(f"_overwrite_line: Using single-line overwrite escape code: {escape_code}")
             sys.stdout.write(escape_code)
             print(line)
         sys.stdout.flush()
@@ -121,16 +141,18 @@ class Logger:
             print(f"\n{completion_message}")
 
 logger = Logger()
+logger.debug = True
 
 
 def download(url, dest_dir, filename=None, timeout=60, verbose=False):
-    """Download and extract a file to a destination directory."""
+    logger.log_debug(f"Starting download for URL: {url} to destination: {dest_dir}")
     os.makedirs(dest_dir, exist_ok=True)
     if filename is None:
         filename = url.split('/')[-1]
     
     # Create a temporary directory for the download
-    download_temp_dir = dest_dir + ".download.tmp"
+    download_temp_dir = os.path.join(dest_dir, ".download.tmp")
+    logger.log_debug(f"Creating temporary download directory: {download_temp_dir}")
     if not os.path.exists(download_temp_dir):
         os.makedirs(download_temp_dir)
     
@@ -138,9 +160,11 @@ def download(url, dest_dir, filename=None, timeout=60, verbose=False):
     temp_filepath = filepath + ".tmp"
 
     try:
+        logger.log_debug(f"Initiating GET request to {url} with timeout {timeout}")
         with requests.get(url, stream=True, timeout=timeout) as r:
             r.raise_for_status()
             total_size = int(r.headers.get('content-length', 0))
+            logger.log_debug(f"Total file size: {total_size} bytes")
 
             with open(temp_filepath, 'wb') as f:
                 chunks = logger.progress(
@@ -152,18 +176,24 @@ def download(url, dest_dir, filename=None, timeout=60, verbose=False):
                 for chunk in chunks:
                     if chunk:  # keep-alive chunks may be empty
                         f.write(chunk)
+            logger.log_debug(f"Download complete to temporary file: {temp_filepath}")
             # Move the temporary file to its final destination
             shutil.move(temp_filepath, filepath)
             print(f"Downloaded {filename} to {dest_dir}")
+            logger.log_debug(f"Moved {temp_filepath} to {filepath}")
 
     except requests.exceptions.RequestException as e:
         print(f"Error downloading {filename}: {e}")
+        logger.log_debug(f"RequestException during download: {e}")
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
+        logger.log_debug(f"Unexpected error during download: {e}")
     finally:
         # Clean up the temporary directory
         if os.path.exists(download_temp_dir):
+            logger.log_debug(f"Cleaning up temporary directory: {download_temp_dir}")
             shutil.rmtree(download_temp_dir)
+        logger.log_debug(f"Download function finished for {url}")
 
 
 
