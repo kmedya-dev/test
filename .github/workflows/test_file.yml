@@ -13,7 +13,8 @@ jobs:
 
       - name: Run download check
         run: |
-          echo "Running test download..."
+          echo "Running test ANSI output & download..."
+          python3 check_ANSI-escape.py
           python3 download.py
 
       - name: Display download log

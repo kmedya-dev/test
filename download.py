@@ -19,6 +19,7 @@ class Logger:
         self.debug = True
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.DEBUG)
+        self._last_line_count = 0
 
         if self.debug:
             os.makedirs(LOG_DIR, exist_ok=True)
@@ -39,27 +40,24 @@ class Logger:
   
     def least_count(self, line):
         """Calculates the number of lines a string will occupy in the terminal."""
+        self.log_debug(f"least_count received line: {line}")
         terminal_width = shutil.get_terminal_size().columns
         visible_line_length = len(self._strip_ansi(line))
         if terminal_width > 0:
-            return (visible_line_length + terminal_width - 1) // terminal_width
+            calculated_lines = (visible_line_length + terminal_width - 1) // terminal_width
+            self.log_debug(f"least_count: Visible line length: {visible_line_length}, Terminal width: {terminal_width}, Calculated lines: {calculated_lines}")
+            return calculated_lines
         return 1
   
     def _overwrite_line(self, line):
         """Overwrites the previous line(s) in the terminal with the given line."""
-        terminal_width = shutil.get_terminal_size().columns
-        self.log_debug(f"_overwrite_line: Terminal width: {terminal_width}, Line length: {len(self._strip_ansi(line))}")
-        if terminal_width < len(line):
-            escape_code = f"\x1b[{self.least_count(line)}F\r\x1b[J"
-            self.log_debug(f"_overwrite_line: Using multi-line overwrite escape code: {repr(escape_code)}")
-            sys.stdout.write(escape_code)
-            print(line)
-        else:
-            escape_code = "\x1b[F\r\x1b[J"
-            self.log_debug(f"_overwrite_line: Using single-line overwrite escape code: {repr(escape_code)}")
-            sys.stdout.write(escape_code)
-            print(line)
+        """if self._last_line_count > 0:"""
+        escape_code = f"\x1b[{self._last_line_count}F\r\x1b[K"
+        sys.stdout.write(escape_code)
+        
+        print(line)
         sys.stdout.flush()
+        self._last_line_count = self.least_count(line)
       
     def format_time(self, seconds):
         seconds = int(seconds)
@@ -92,6 +90,7 @@ class Logger:
 
         print(f"{description}...\n")
         sys.stdout.flush()
+        """self._last_line_count = 1"""
         for i, item in enumerate(iterable):
             yield item
 
@@ -145,6 +144,7 @@ class Logger:
         # completion message
         if completion_message:
             print(f"\n{completion_message}")
+        """self._last_line_count = 0"""
 
 logger = Logger()
 logger.debug = True
