@@ -1,7 +1,7 @@
 name: Test File
 
 on:
-  push:
+  workflow_dispatch:
 
 jobs:
   check-size:
@@ -14,7 +14,17 @@ jobs:
       - name: Run download check
         run: |
           echo "Running test download..."
-          python3 download.py
+          python3 main.py download libffi
+          python3 main.py download gradle
+          python3 main.py download https://services.gradle.org/distributions/gradle-9.0.0-bin.zip
+
+      - name: List files
+        run: |
+          ls -la
+          ls -la ~/.downloads/sources/
+          ls -la ~/.downloads/sources/libffi
+          ls -la ~/.downloads/sources/gradle
+          ls -la ~/.downloads/sources/gradle-9.0.0-bin
 
       - name: Display download log
         run: |
