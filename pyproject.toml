@@ -1,0 +1,30 @@
+[project]
+name = "test"
+version = "0.1"
+description = "A user-friendly, cross-platform command-line tool for building applications."
+authors = [{ name = "kmedya", email = "koustavamedya.2000@gmail.com" }]
+# requires-python = "3.13.0"
+dependencies = [
+    "click",
+    "toml",
+    "requests",
+    "colorama",
+    "stdlib-list",
+    "setuptools",
+    "packaging",
+]
+[project.scripts]
+test = "test.main:cli"
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-cov",
+]
+
+[build-system]
+requires = ["setuptools", "wheel", "build"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["test*"]
