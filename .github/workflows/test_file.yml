@@ -19,9 +19,9 @@ jobs:
       - name: Run download check
         run: |
           echo "Running test download..."
-          test download libffi
-          test download gradle
-          test download https://services.gradle.org/distributions/gradle-9.0.0-bin.zip
+          dxx download libffi
+          dxx download gradle
+          dxx download https://services.gradle.org/distributions/gradle-9.0.0-bin.zip
 
       - name: List files
         run: |

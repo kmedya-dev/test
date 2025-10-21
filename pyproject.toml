@@ -14,7 +14,7 @@ dependencies = [
     "packaging",
 ]
 [project.scripts]
-test = "test.main:cli"
+dxx = "test.main:cli"
 
 [project.optional-dependencies]
 test = [
