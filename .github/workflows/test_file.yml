@@ -30,9 +30,10 @@ jobs:
       - name: List files
         run: |
           ls -la
-          ls -la ~/cmdline-tools || true
+          ls -la cmdline-tools || true
           ls -la ~/.downloads/sources/ || true
-          ls -la ~/.downloads/sources/cmdline-tools || true
+          ls -la ~/.downloads/sources/commandlinetools-linux-13114758_latest/ || true
+          ls -la ~/.downloads/sources/commandlinetools-linux-13114758_latest/cmdline-tools || true
 
       - name: Display download log
         run: |
