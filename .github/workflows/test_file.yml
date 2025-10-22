@@ -19,28 +19,24 @@ jobs:
       - name: Run download check
         run: |
           echo "Running test download..."
-          dxx download libffi
-          dxx download gradle
-          dxx download https://services.gradle.org/distributions/gradle-9.0.0-bin.zip
+          dxx download https://dl.google.com/android/repository/commandlinetools-linux-13114758_latest.zip
 
-      - name: Run gradle install
+      - name: Run cmdline-tools install
         run: |
           echo "Running test download..."
-          curl -LO https://services.gradle.org/distributions/gradle-9.0.0-bin.zip
-          unzip gradle-9.0.0-bin.zip
+          curl -LO https://dl.google.com/android/repository/commandlinetools-linux-13114758_latest.zip
+          unzip commandlinetools-linux-13114758_latest.zip
 
       - name: List files
         run: |
           ls -la
-          ls -la ~/gradle-9.0.0-bin || true
+          ls -la ~/cmdline-tools || true
           ls -la ~/.downloads/sources/ || true
-          ls -la ~/.downloads/sources/libffi || true
-          ls -la ~/.downloads/sources/gradle || true
-          ls -la ~/.downloads/sources/gradle-9.0.0-bin || true
+          ls -la ~/.downloads/sources/cmdline-tools || true
 
       - name: Display download log
         run: |
-          LOG_FILE=$(ls -t ~/.logs/download-*.log | head -n 1)
+          LOG_FILE=$(ls -t ~/.logs/download_*.log | head -n 1)
           if [ -f "$LOG_FILE" ]; then
             echo "--- Content of $LOG_FILE ---"
             cat "$LOG_FILE"
