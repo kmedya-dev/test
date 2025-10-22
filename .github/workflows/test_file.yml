@@ -23,13 +23,20 @@ jobs:
           dxx download gradle
           dxx download https://services.gradle.org/distributions/gradle-9.0.0-bin.zip
 
+      - name: Run gradle install
+        run: |
+          echo "Running test download..."
+          curl -LO https://services.gradle.org/distributions/gradle-9.0.0-bin.zip
+          unzip gradle-9.0.0-bin.zip
+
       - name: List files
         run: |
           ls -la
-          ls -la ~/.downloads/sources/
-          ls -la ~/.downloads/sources/libffi
-          ls -la ~/.downloads/sources/gradle
-          ls -la ~/.downloads/sources/gradle-9.0.0-bin
+          ls -la ~/gradle-9.0.0-bin || true
+          ls -la ~/.downloads/sources/ || true
+          ls -la ~/.downloads/sources/libffi || true
+          ls -la ~/.downloads/sources/gradle || true
+          ls -la ~/.downloads/sources/gradle-9.0.0-bin || true
 
       - name: Display download log
         run: |

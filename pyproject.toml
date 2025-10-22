@@ -1,7 +1,7 @@
 [project]
-name = "test"
+name = "dxx"
 version = "0.1"
-description = "A user-friendly, cross-platform command-line tool for building applications."
+description = "A user-friendly, cross-platform command-line tool for downloading."
 authors = [{ name = "kmedya", email = "koustavamedya.2000@gmail.com" }]
 # requires-python = "3.13.0"
 dependencies = [
@@ -14,7 +14,7 @@ dependencies = [
     "packaging",
 ]
 [project.scripts]
-dxx = "test.main:cli"
+dxx = "dxx.main:cli"
 
 [project.optional-dependencies]
 test = [
@@ -27,4 +27,4 @@ requires = ["setuptools", "wheel", "build"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
-include = ["test*"]
+include = ["dxx*"]
