@@ -1,6 +1,6 @@
 import subprocess
 
-def ():
+def build_triple():
     arch = subprocess.getoutput("uname -m").strip()
     vendor = subprocess.getoutput("grep -m1 -E 'vendor_id|CPU implementer' /proc/cpuinfo | awk '{print $3}'").strip() or "unknown"
     system = subprocess.getoutput("uname -s").strip().lower()
