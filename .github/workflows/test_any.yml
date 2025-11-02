@@ -4,13 +4,13 @@ on:
   workflow_dispatch:
 
 jobs:
-  check-size:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
+    - name: searching
+      run: |
+        echo "Searching...."
+        gcc -dumpmachine
