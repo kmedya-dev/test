@@ -18,4 +18,4 @@ jobs:
     - name: searching
       run: |
         echo "Searching...."
-        python3 build_triplet.py
+        python3 triplet.py
