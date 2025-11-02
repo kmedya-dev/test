@@ -13,4 +13,4 @@ jobs:
     - name: searching
       run: |
         echo "Searching...."
-        gcc -dumpmachine
+        python3 build_triplet.py
