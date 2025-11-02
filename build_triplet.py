@@ -21,8 +21,10 @@ implementers = {
     "0x61": "ampere",
     "0x69": "intel",
 }
-                                                                                                     arch    = sh("uname -m")                                                                             system  = sh("uname -s").lower()
-vendor_cmd = "grep -m1 -E 'vendor_id|CPU implementer' /proc/cpuinfo"                                 vendor_id_raw = sh(f"{vendor_cmd} | awk '{{print $3}}'")                                             
+arch    = sh("uname -m")
+system  = sh("uname -s").lower()
+vendor_cmd = "grep -m1 -E 'vendor_id|CPU implementer' /proc/cpuinfo"
+vendor_id_raw = sh(f"{vendor_cmd} | awk '{{print $3}}'")                                             
 if ":" not in vendor_id_raw:
     vendor_id = vendor_id_raw
 else:
