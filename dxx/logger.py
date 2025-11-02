@@ -108,12 +108,12 @@ class Logger:
 
         def format_size(bytes_val):
             if bytes_val >= 1024 * 1024 * 1024:
-                return f"{bytes_val / (1024*1024*1024):.1f} GB"
+                return f"{bytes_val / (1024*1024*1024):.1f}GB"
             if bytes_val >= 1024 * 1024:
-                return f"{bytes_val / (1024*1024):.1f} MB"
+                return f"{bytes_val / (1024*1024):.1f}MB"
             if bytes_val >= 1024:
-                return f"{bytes_val / 1024:.1f} KB"
-            return f"{int(bytes_val)} B"
+                return f"{bytes_val / 1024:.1f}KB"
+            return f"{int(bytes_val)}B"
 
         self.info(f"{description}...")
         for i, item in enumerate(iterable):
@@ -159,15 +159,16 @@ class Logger:
                 f"{percent*100:3.0f}% | "
                 f"{bar} | "
                 f"{format_size(current_val)}/{format_size(total)} • "
-                f"{speed/speed_divisor:.1f} {speed_unit} • "
+                f"{speed/speed_divisor:.1f}{speed_unit} • "
                 f"{self.format_time(elapsed)}/"
                 f"{eta_str}"
             )
-
-            self._overwrite_line(line)
+            print(f"\r{line}", end="", flush=True)
+            #self._overwrite_line(line)
 
         # completion message
         if completion_message:
+            print()
             self.success(completion_message)
 
     # -------- Exception logging --------

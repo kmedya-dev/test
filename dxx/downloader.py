@@ -5,7 +5,7 @@ from . import config
 from .logger import logger
 from .manager import download_and_extract
 
-DOWNLOAD_DIR = os.path.join(os.path.expanduser("~"), ".downloads")
+DOWNLOAD_DIR = os.path.join(os.path.expanduser("~"), ".dxx", "downloads")
 
 
 def download_from_url(url, package_name=None, verbose=False):

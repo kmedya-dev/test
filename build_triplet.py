@@ -21,31 +21,40 @@ implementers = {
     "0x61": "ampere",
     "0x69": "intel",
 }
+
 arch    = sh("uname -m")
 system  = sh("uname -s").lower()
 vendor_cmd = "grep -m1 -E 'vendor_id|CPU implementer' /proc/cpuinfo"
-vendor_id_raw = sh(f"{vendor_cmd} | awk '{{print $3}}'")                                             
+vendor_id_raw = sh(f"{vendor_cmd} | awk '{{print $3}}'")
+
 if ":" not in vendor_id_raw:
     vendor_id = vendor_id_raw
 else:
     vendor_id = sh(f"{vendor_cmd} | awk '{{print $NF}}'")
 
 vendor = implementers.get(vendor_id.lower(), vendor_id)
-ldd_ver = sh("ldd --version")
-cc_ver = sh("cc --version")
 
-toolchain_env = os.environ.get("TOOLCHAIN_ENV")
-if not toolchain_env:
-    if os.environ.get("ANDROID_ROOT"):
-        toolchain_env = "android"
-    elif "gnu" in ldd_ver.lower():
-        toolchain_env = "gnu"
-    elif "musl" in ldd_ver.lower():
-        toolchain_env = "musl"
-    elif "clang" in cc_ver.lower() or "llvm" in cc_ver.lower():
-        toolchain_env = "llvm"
-    else:
-        toolchain_env = ""
+libc_c_code = '''
+#if defined(__ANDROID__)
+LIBC=android
+#else
+#include <features.h>
+#if defined(__UCLIBC__)
+LIBC=uclibc
+#elif defined(__dietlibc__)
+LIBC=dietlibc
+#elif defined(__GLIBC__)
+LIBC=gnu
+#else
+#include <stdarg.h>
+/* First heuristic to detect musl libc.  */
+#ifdef __DEFINED_va_list
+LIBC=musl
+#endif
+#endif
+#endif
+'''
+libc = sh(f"echo '{libc_c_code}' | cc -E - 2>/dev/null | grep LIBC=").split("=")[-1]
 
-triplet = f"{arch}-{vendor}-{system}-{toolchain_env}"
+triplet = f"{arch}-{vendor}-{system}-{libc}"
 print(triplet)

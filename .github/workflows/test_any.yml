@@ -14,8 +14,9 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: '3.13'
-        
+
     - name: searching
       run: |
         echo "Searching...."
         python3 build_triplet.py
+        python3 triplet.py
