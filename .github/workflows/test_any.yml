@@ -18,4 +18,11 @@ jobs:
     - name: searching
       run: |
         echo "Searching...."
-        python3 triplet.py
+        uname -a
+        uname -i
+        uname -m
+        uname -n
+        uname -o
+        uname -r
+        uname -s
+        uname -v
