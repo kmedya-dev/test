@@ -24,9 +24,9 @@ jobs:
       - name: Show test.yml content inside log
         run: |
           echo -e "\n\n===============================" >> test.log
-          echo "cat test.yml" >> test.log
+          echo "python_find.sh" >> test.log
           echo "===============================" >> test.log
-          cat .github/workflows/test.yml >> test.log
+          cat python_find.sh >> test.log
 
       - name: Upload test.log as artifact
         uses: actions/upload-artifact@v4
