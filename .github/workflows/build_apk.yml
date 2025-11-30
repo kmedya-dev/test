@@ -31,11 +31,13 @@ jobs:
         droidbuilder install dev-kit
         source "$HOME/.droidbuilder/env.sh"
         droidbuilder clean
-        droidbuilder build android || true
+        droidbuilder build android
 
     - name: Listing dir
       run: |
         ls -la
+        echo "Listing build dir:"
+        ls -R $HOME/.droidbuilder/build/ || echo "Build dir not found"
 
     - name: Display build log
       run: |
