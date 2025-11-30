@@ -8,15 +8,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '21'
-
-      - name: Print JAVA_HOME
-        run: echo "$JAVA_HOME"
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
