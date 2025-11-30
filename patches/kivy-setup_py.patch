@@ -1,5 +1,5 @@
---- setup.py	2025-11-30 17:25:18.948269556 +0530
-+++ setup.py.mod	2025-11-30 13:21:23.718344096 +0530
+--- a/setup.py
++++ b/setup.py
 @@ -151,9 +151,9 @@
  
  platform = sys.platform
