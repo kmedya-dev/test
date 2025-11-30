@@ -16,24 +16,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e .
 
-      - name: Run download check
-        run: |
-          echo "Running test download..."
-          dxx download https://dl.google.com/android/repository/commandlinetools-linux-13114758_latest.zip
-
-      - name: Run cmdline-tools install
-        run: |
-          echo "Running test download..."
-          curl -LO https://dl.google.com/android/repository/commandlinetools-linux-13114758_latest.zip
-          unzip commandlinetools-linux-13114758_latest.zip
-
       - name: List files
         run: |
-          ls -la
+          ls -la ///home/runner/work/test/test
           ls -la cmdline-tools || true
           ls -la ~/.downloads/sources/ || true
-          ls -la ~/.downloads/sources/commandlinetools-linux-13114758_latest/ || true
-          ls -la ~/.downloads/sources/commandlinetools-linux-13114758_latest/cmdline-tools || true
 
       - name: Display download log
         run: |
