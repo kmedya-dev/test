@@ -27,7 +27,7 @@ jobs:
         with:
           run-id: 19800327297
           name: apk
-          path: /home/runner/.droidbuilder/build/
+          path: ./downloaded
 
 
       - name: Run download check
