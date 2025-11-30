@@ -1,0 +1,19 @@
+name: Path
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: clone repo
+      run: |
+        git clone https://github.com/kmedya-dev/browser.git
+
+    - name: path
+      run: |        
+        cd browser && pwd
