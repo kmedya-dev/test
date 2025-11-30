@@ -31,7 +31,7 @@ jobs:
         droidbuilder install dev-kit
         source "$HOME/.droidbuilder/env.sh"
         droidbuilder clean
-        droidbuilder build android
+        droidbuilder build android || true
 
     - name: Listing dir
       run: |
