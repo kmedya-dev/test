@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  setup-android-tools:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,27 +17,50 @@ jobs:
       - name: Print JAVA_HOME
         run: echo "$JAVA_HOME"
 
-      # - name: Install dependencies
-      #  run: |
-      #    python -m pip install --upgrade pip
-      #    pip install -e .
-
-      - name: Download old artifact
-        uses: actions/download-artifact@v4
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v4
         with:
-          run-id: 19800327297
-          name: apk
-          path: /home/runner/.droidbuilder/build/
+          python-version: '3.13'
 
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
 
       - name: Run download check
         run: |
           droidbuilder download gradle-9.2.1
+          droidbuilder download browser
+
+      - name: Make dir
+        run: |
+          mkdir -p ~/.droidbuilder/build
+
+      - name: Move some folder
+        run: |
+          mv ~/dxx/sources/gradle-9.2.1 ~/.droidbuilder/gradle-9.2.1
+          mv ~/dxx/sources/browser ~/.droidbuilder/build/browser
 
       - name: List files
         run: |
-          ls -la
+          ls -la ~/.droidbuilder/
+          ls -la ~/.droidbuilder/build/browser/
 
-      # - name: build apk
-      #  run: |
-      #    droidbuilder build android
+      - name: Set GRADLE_HOME and PATH
+        run: |
+          echo "GRADLE_HOME=$HOME/.droidbuilder/gradle-9.2.1" >> $GITHUB_ENV
+          echo "$HOME/.droidbuilder/gradle-9.2.1/bin" >> $GITHUB_PATH
+
+      - name: build apk
+        run: |
+          droidbuilder build android
+
+      - name: Display build log
+        run: |
+          LOG_FILE=$(ls -t ~/.dxx/logs/download_*.log | head -n 1)
+          if [ -f "$LOG_FILE" ]; then
+            echo "--- Content of $LOG_FILE ---"
+            cat "$LOG_FILE"
+          else
+            echo "No download log file found."
+          fi
