@@ -33,12 +33,6 @@ jobs:
         droidbuilder clean
         droidbuilder build android
 
-    - name: Listing dir
-      run: |
-        ls -la
-        echo "Listing build dir:"
-        ls -R $HOME/.droidbuilder/build/ || echo "Build dir not found"
-
     - name: Display build log
       run: |
         LOG_FILE=$(ls -t $HOME/.droidbuilder/logs/droidbuilder_*.log | head -n 1)
@@ -47,6 +41,22 @@ jobs:
           cat "$LOG_FILE"
         else
           echo "No build log file found."
+        fi
+
+    - name: Listing dir
+      run: |
+        ls -la
+        echo "Listing build dir:"
+        ls -R $HOME/.droidbuilder/build/ || echo "Build dir not found"
+
+    - name: Zip Build Output
+      run: |
+        if [ -d "$HOME/.droidbuilder/build/browser" ]; then
+          cd "$HOME/.droidbuilder/build/browser"
+          zip -r "$GITHUB_WORKSPACE/browser.zip" .
+        else
+          echo "Build directory does not exist"
+          exit 1
         fi
 
     - name: Upload some file as artifacts
@@ -60,11 +70,10 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: release
-        path: |
-          /home/runner/.droidbuilder/build/
+        path: browser.zip
 
     - name: Release
       uses: softprops/action-gh-release@v2
       with:
         tag_name: v${{ github.run_number }}
-        files: /home/runner/.droidbuilder/build/*
+        files: browser.zip
