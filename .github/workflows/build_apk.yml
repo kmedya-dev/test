@@ -50,8 +50,7 @@ jobs:
       with:
         name: kivy artifacts
         path: |
-          /home/runner/.droidbuilder/runtime_packages_src/kivy-2.3.1/setup.py
-          /home/runner/.droidbuilder/runtime_packages_src/kivy-2.3.1/setup.py.rej
+          /home/runner/.kivy/
 
     - name: Upload apk as artifacts
       uses: actions/upload-artifact@v4
