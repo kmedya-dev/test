@@ -5,12 +5,11 @@ on:
 
 jobs:
   download:
-    needs: upload
     runs-on: ubuntu-latest
     steps:
     - name: Download All Artifacts
       uses: actions/download-artifact@v4
       with:
-        artifact-ids: 12345
+        artifact-ids: 4717325417
     - name: Display structure of downloaded files
       run: ls -R
