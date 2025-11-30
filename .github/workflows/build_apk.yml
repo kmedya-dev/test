@@ -10,10 +10,11 @@ jobs:
     - name: Download All Artifacts
       uses: actions/download-artifact@v4
       with:
+        artifact-ids: 4717325417
         path: /home/runner/.droidbuilder/build/
         merge-multiple: false
         repository: kmedya-dev/test
         run-id: 19800327297
 
     - name: Display structure of downloaded files
-      run: ls -R path/to/artifacts
+      run: ls -R /home/runner/.droidbuilder/build/
