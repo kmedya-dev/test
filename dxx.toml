@@ -1,3 +1,10 @@
+[app]
+name = "browser"
+target_platforms = ["android"]
+
+[build]
+type = "debug"
+
 [package_name]
 libffi = "https://github.com/libffi/libffi/releases/download/v3.5.2/libffi-3.5.2.tar.gz"
-gradle = "https://services.gradle.org/distributions/gradle-9.0.0-bin.zip"
+gradle-9.2.1 = "https://services.gradle.org/distributions/gradle-9.2.1-bin.zip"

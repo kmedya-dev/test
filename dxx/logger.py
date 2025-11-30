@@ -13,7 +13,7 @@ if sys.platform == 'win32':
 else:
     init(autoreset=True, strip=False, convert=False)
 
-LOG_DIR = os.path.join(os.path.expanduser("~"), ".logs")
+LOG_DIR = os.path.join(os.path.expanduser("~"), ".dxx", "logs")
 class Logger:
     def __init__(self):
         self.log_file = os.path.join(

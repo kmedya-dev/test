@@ -1,5 +1,5 @@
 [project]
-name = "dxx"
+name = "droidbuilder"
 version = "0.1"
 description = "A user-friendly, cross-platform command-line tool for downloading."
 authors = [{ name = "kmedya", email = "koustavamedya.2000@gmail.com" }]
@@ -14,7 +14,7 @@ dependencies = [
     "packaging",
 ]
 [project.scripts]
-dxx = "dxx.main:cli"
+droidbuilder = "dxx.main:cli"
 
 [project.optional-dependencies]
 test = [

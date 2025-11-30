@@ -1,0 +1,72 @@
+import subprocess
+import shlex
+from .logger import logger
+
+def run_shell_command(command, description=None, stream_output=False, env=None, input_data=None, cwd=None):
+    """
+    Executes a shell command, with options for streaming output and providing input.
+
+    Args:
+        command (list or str): The command to execute.
+        description (str, optional): A description of the command to be logged.
+        stream_output (bool): If True, streams the output in real-time.
+        env (dict, optional): A dictionary of environment variables.
+        input_data (str, optional): Data to be passed to the command's stdin.
+        cwd (str, optional): The working directory for the command.
+
+    Returns:
+        If stream_output is True, returns a generator that yields output lines and the process object.
+        If stream_output is False, returns a tuple (stdout, stderr, return_code).
+    """
+    if description:
+        logger.info(description)
+
+    try:
+        if stream_output:
+            process = subprocess.Popen(
+                command,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                bufsize=1,
+                universal_newlines=True,
+                env=env,
+                cwd=cwd,
+                shell=True if isinstance(command, str) else False,
+            )
+
+            def _generator():
+                for line in process.stdout:
+                    yield line
+                process.communicate()
+            return _generator(), process
+
+        else:
+            result = subprocess.run(
+                command,
+                capture_output=True,
+                text=True,
+                encoding='utf-8',
+                env=env,
+                input=input_data,
+                check=False,
+                cwd=cwd,
+                shell=True if isinstance(command, str) else False,
+            )
+            return {
+                "stdout": result.stdout,
+                "stderr": result.stderr,
+                "returncode": result.returncode,
+            }
+
+    except FileNotFoundError as e:
+        logger.error(f"Command not found: {e.filename}")
+        if stream_output:
+            return iter([]), type('obj', (object,), {'returncode': -1})
+        else:
+            return {"stdout": "", "stderr": str(e), "returncode": -1}
+    except Exception as e:
+        logger.error(f"An unexpected error occurred: {e}")
+        if stream_output:
+            return iter([]), type('obj', (object,), {'returncode': -1})
+        else:
+            return {"stdout": "", "stderr": str(e), "returncode": -1}
