@@ -17,4 +17,4 @@ jobs:
         run-id: 19800327297
 
     - name: Display structure of downloaded files
-      run: ls -R /home/runner/.droidbuilder/build/
+      run: ls -R
