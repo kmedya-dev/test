@@ -45,6 +45,14 @@ jobs:
           echo "No build log file found."
         fi
 
+    - name: Upload some file as artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: kivy artifacts
+        path: |
+          /home/runner/.droidbuilder/runtime_packages_src/kivy-2.3.1/kivy/setup.py
+          /home/runner/.droidbuilder/runtime_packages_src/kivy-2.3.1/kivy/setup.py.rej
+
     - name: Upload apk as artifacts
       uses: actions/upload-artifact@v4
       with:
