@@ -1,0 +1,40 @@
+[app]
+name = "browser"
+package_domain = "com.example"
+version = "0.1"
+root_dir = "/home/runner/work/test/test/browser"
+main_file = "/home/runner/work/test/test/browser/main.py"
+target_platforms = ["android"]
+
+[app.dependency]
+runtime_packages = ["kivy==2.3.1", "pyjnius", "watchdog==6.0.0"]
+buildtime_packages = ["libffi==3.5.2", "openssl==3.6.0"]
+patch_dir = "/home/runner/work/test/test/browser/patches"
+
+[android]
+cmdline_tools_version = "13114758"
+sdk_version = "36"
+ndk_version = "28.2.13676358"
+min_sdk_version = "24"
+ndk_api = "24"
+archs = ["arm64-v8a", "armeabi-v7a"]
+manifest_file = ""
+intent_filters_file = "intent_filters.xml"
+accept_sdk_license = "non-interactive"
+
+[java]
+jdk_version = "21"
+gradle_version = "9.2.1"
+
+[python]
+python_version = "3.13.0"
+
+[build]
+type = "debug"
+
+[app.dependency_mapping]
+libffi = "https://github.com/libffi/libffi/releases/download/v{version}/libffi-{version}.tar.gz"
+openssl = "https://github.com/openssl/openssl/releases/download/openssl-{version}/openssl-{version}.tar.gz"
+
+[build.configure.arguments]
+libffi = ["--disable-builddir",]

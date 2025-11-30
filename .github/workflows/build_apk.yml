@@ -1,0 +1,53 @@
+name: Android CI
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python 3.13
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.13'
+
+    - name: clone repo
+      run: |
+        git clone https://github.com/kmedya-dev/browser.git
+
+    - name: Install dependencies and build
+      run: |
+        python -m pip install --upgrade pip
+        pip install git+https://github.com/kmedya-dev/droidbuilder.git@refactor-II
+
+    - name: Build android
+      run: |
+        droidbuilder install dev-kit
+        source "$HOME/.droidbuilder/env.sh"
+        droidbuilder clean
+        droidbuilder build android || true
+
+    - name: Listing dir
+      run: |
+        ls -la
+
+    - name: Display build log
+      run: |
+        LOG_FILE=$(ls -t $HOME/.droidbuilder/logs/droidbuilder_*.log | head -n 1)
+        if [ -f "$LOG_FILE" ]; then
+          echo "--- Content of $LOG_FILE ---"
+          cat "$LOG_FILE"
+        else
+          echo "No build log file found."
+        fi
+
+    - name: Upload apk as artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: apk
+        path: |
+          /home/runner/.droidbuilder/build/
