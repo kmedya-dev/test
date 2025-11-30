@@ -9,7 +9,7 @@ target_platforms = ["android"]
 [app.dependency]
 runtime_packages = ["kivy==2.3.1", "pyjnius", "watchdog==6.0.0"]
 buildtime_packages = ["libffi==3.5.2", "openssl==3.6.0"]
-patch_dir = "/home/runner/work/test/test/browser/patches"
+patch_dir = "./patches"
 
 [android]
 cmdline_tools_version = "13114758"
