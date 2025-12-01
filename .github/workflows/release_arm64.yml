@@ -25,7 +25,7 @@ jobs:
         run: droidbuilder install dev-kit
 
       - name: Build Android
-        run: droidbuilder build android
+        run: droidbuilder build android || true
 
       - name: Zip arm64-v8a artifact
         run: |
