@@ -1,4 +1,4 @@
-name: Android CI
+name: Build APK
 
 on:
   workflow_dispatch:
@@ -6,74 +6,54 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Set up Python 3.13
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.13'
+      - name: clone repo
+        run: |
+          git clone https://github.com/kmedya-dev/browser.git
 
-    - name: clone repo
-      run: |
-        git clone https://github.com/kmedya-dev/browser.git
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install git+https://github.com/kmedya-dev/droidbuilder.git@refactor-II
 
-    - name: Install dependencies and build
-      run: |
-        python -m pip install --upgrade pip
-        pip install git+https://github.com/kmedya-dev/droidbuilder.git@refactor-II
+      - name: Run install
+        run: |
+          droidbuilder install https://services.gradle.org/distributions/gradle-9.2.1-bin.zip
+          droidbuilder install https://github.com/kmedya-dev/test/releases/tag/binary-v3/arm64-v8a.zip
 
-    - name: Build android
-      run: |
-        droidbuilder install dev-kit
-        source "$HOME/.droidbuilder/env.sh"
-        droidbuilder clean
-        droidbuilder build android
+      - name: Make dir
+        run: |
+          mkdir -p ~/.droidbuilder/local
+          mkdir -p ~/.droidbuilder/gradle-9.2.1
 
-    - name: Display build log
-      run: |
-        LOG_FILE=$(ls -t $HOME/.droidbuilder/logs/droidbuilder_*.log | head -n 1)
-        if [ -f "$LOG_FILE" ]; then
-          echo "--- Content of $LOG_FILE ---"
-          cat "$LOG_FILE"
-        else
-          echo "No build log file found."
-        fi
+      - name: Move some folder
+        run: |
+          mv ~/.droidbuilder/sources/gradle-9.2.1-bin/ ~/.droidbuilder/gradle-9.2.1/
+          mv ~/.droidbuilder/sources/arm64-v8a ~/.droidbuilder/local/arm64-v8a
 
-    - name: Listing dir
-      run: |
-        ls -la
-        echo "Listing build dir:"
-        ls -R $HOME/.droidbuilder/build/ || echo "Build dir not found"
+      - name: List files
+        run: |
+          ls -la ~/.droidbuilder/
+          ls -la ~/.droidbuilder/local/arm64-v8a/
 
-    - name: Zip Build Output
-      run: |
-        if [ -d "$HOME/.droidbuilder/build/browser" ]; then
-          cd "$HOME/.droidbuilder/build/browser"
-          zip -r "$GITHUB_WORKSPACE/browser.zip" .
-        else
-          echo "Build directory does not exist"
-          exit 1
-        fi
+      - name: Set GRADLE_HOME and PATH
+        run: |
+          echo "GRADLE_HOME=$HOME/.droidbuilder/gradle-9.2.1" >> $GITHUB_ENV
+          echo "$HOME/.droidbuilder/gradle-9.2.1/bin" >> $GITHUB_PATH
 
-    - name: Upload some file as artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: kivy artifacts
-        path: |
-          /home/runner/.kivy/
+      - name: build apk
+        run: |
+          droidbuilder build android
 
-    - name: Upload apk as artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: release
-        path: browser.zip
-
-    - name: Release
-      uses: softprops/action-gh-release@v2
-      with:
-        tag_name: v${{ github.run_number }}
-        files: browser.zip
+      - name: Display build log
+        run: |
+          LOG_FILE=$(ls -t ~/.droidbuilder/logs/droidbuilder_*.log | head -n 1)
+          if [ -f "$LOG_FILE" ]; then
+            echo "--- Content of $LOG_FILE ---"
+            cat "$LOG_FILE"
+          else
+            echo "No build log file found."
+          fi
