@@ -8,50 +8,95 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: clone repo
-        run: |
-          git clone https://github.com/kmedya-dev/browser.git
+      # -----------------------------------------------------
+      # Cache DroidBuilder Home
+      # -----------------------------------------------------
+      - name: Cache DroidBuilder Home
+        id: dev_kit_cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            $HOME/.droidbuilder/android-sdk
+            $HOME/.droidbuilder/android-sdk/ndk/
+            $HOME/.droidbuilder/jdk-21
+            $HOME/.droidbuilder/gradle-9.2.1
+            $HOME/.droidbuilder/local/
+            $HOME/work/test/test/browser
+          key: droidbuilder-dev_kit-v1
 
+      # -----------------------------------------------------
+      # Install DroidBuilder itself (ALWAYS)
+      # -----------------------------------------------------
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install git+https://github.com/kmedya-dev/droidbuilder.git@refactor-II
 
-      - name: Run install
+      # -----------------------------------------------------
+      # Install Dev Kit 
+      # -----------------------------------------------------
+      - name: Install DroidBuilder Dev Kit
         run: |
+          droidbuilder install dev-kit
+
+      # -----------------------------------------------------
+      # Load environment
+      # -----------------------------------------------------
+      - name: Source environment
+        shell: bash
+        run: |
+          if [ -f $HOME/.droidbuilder/env.sh ]; then
+            source $HOME/.droidbuilder/env.sh
+            echo "JAVA_HOME=$JAVA_HOME" >> $GITHUB_ENV
+            echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
+            echo "$JAVA_HOME/bin" >> $GITHUB_PATH
+            echo "$GRADLE_HOME/bin" >> $GITHUB_PATH
+          else
+            echo "env.sh missing!"
+            exit 1
+          fi
+
+      # -----------------------------------------------------
+      # Clone repo only on cache MISS
+      # -----------------------------------------------------
+      - name: Clone browser repo
+        if: steps.dev_kit_cache.outputs.cache-hit != 'true'
+        run: |
+          git clone https://github.com/kmedya-dev/browser.git
           droidbuilder install package https://services.gradle.org/distributions/gradle-9.2.1-bin.zip
+
+      # -----------------------------------------------------
+      # Install architecture package (ALWAYS)
+      # -----------------------------------------------------
+      - name: Install arm64-v8a
+        run: |
           droidbuilder install package https://github.com/kmedya-dev/test/releases/download/binary-v3/arm64-v8a.zip
 
-      - name: Make dir
+      # -----------------------------------------------------
+      # Move architecture folder only on cache MISS
+      # -----------------------------------------------------
+      - name: Prepare local dir
+        if: steps.dev_kit_cache.outputs.cache-hit != 'true'
         run: |
-          mkdir -p ~/.droidbuilder/local
-          mkdir -p ~/.droidbuilder/gradle-9.2.1
+          mkdir -p $HOME/.droidbuilder/local
+          mv $HOME/.droidbuilder/sources/arm64-v8a $HOME/.droidbuilder/local/arm64-v8a
 
-      - name: Move some folder
-        run: |
-          mv ~/.droidbuilder/sources/gradle-9/ ~/.droidbuilder/gradle-9.2.1/
-          mv ~/.droidbuilder/sources/arm64-v8a ~/.droidbuilder/local/arm64-v8a
-
-      - name: List files
-        run: |
-          ls -la ~/.droidbuilder/
-          ls -la ~/.droidbuilder/sources/
-          ls -la ~/.droidbuilder/local/arm64-v8a/
-
-      - name: Set GRADLE_HOME and PATH
-        run: |
-          echo "GRADLE_HOME=$HOME/.droidbuilder/gradle-9.2.1" >> $GITHUB_ENV
-          echo "$HOME/.droidbuilder/gradle-9.2.1/bin" >> $GITHUB_PATH
-
-      - name: build apk
+      # -----------------------------------------------------
+      # Build APK
+      # -----------------------------------------------------
+      - name: Build APK
         run: |
           droidbuilder build android
 
+      # -----------------------------------------------------
+      # Show build logs
+      # -----------------------------------------------------
       - name: Display build log
         run: |
-          LOG_FILE=$(ls -t ~/.droidbuilder/logs/droidbuilder_*.log | head -n 1)
+          LOG_FILE=$(ls -t $HOME/.droidbuilder/logs/droidbuilder_*.log | head -n 1)
           if [ -f "$LOG_FILE" ]; then
             echo "--- Content of $LOG_FILE ---"
             cat "$LOG_FILE"
